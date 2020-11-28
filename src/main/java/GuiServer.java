@@ -5,7 +5,9 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -22,7 +24,7 @@ public class GuiServer extends Application{
 	
 	TextField s1,s2,s3,s4, c1;
 	Button serverChoice,clientChoice,b1;
-	HashMap<String, Scene> sceneMap;
+	public HashMap<String, Scene> sceneMap;
 	GridPane grid;
 	HBox buttonBox;
 	VBox clientBox;
@@ -30,9 +32,18 @@ public class GuiServer extends Application{
 	BorderPane startPane;
 	Server serverConnection;
 	Client clientConnection;
+	private static Stage pStage;
 	
 	ListView<String> listItems, listItems2;
 	
+	
+	public static Stage getPrimaryStage() {
+        return pStage;
+    }
+	
+	 public void setPrimaryStage(Stage pStage) {
+		 GuiServer.pStage = pStage;
+	    }
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -42,6 +53,7 @@ public class GuiServer extends Application{
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		// TODO Auto-generated method stub
+		pStage = primaryStage;
 		primaryStage.setTitle("The Networked Client/Server GUI Example");
 		
 		this.serverChoice = new Button("Server");
@@ -79,7 +91,11 @@ public class GuiServer extends Application{
 		startPane.setPadding(new Insets(70));
 		startPane.setCenter(buttonBox);
 		
-		startScene = new Scene(startPane, 800,800);
+		
+		//System.out.println("Test  = "+ FXMLLoader.load(getClass().getResource("/fxml/choice.fxml")));
+		Parent root = FXMLLoader.load(getClass().getResource("/fxml/choice.fxml"));
+		
+		startScene = new Scene(root, 800,800);
 		
 		listItems = new ListView<String>();
 		listItems2 = new ListView<String>();

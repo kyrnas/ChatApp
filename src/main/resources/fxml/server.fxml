@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ServerController">
+   <children>
+      <BorderPane layoutX="-2.0" layoutY="-1.0" prefHeight="400.0" prefWidth="600.0">
+         <top>
+            <Label text="SERVER" BorderPane.alignment="CENTER">
+               <font>
+                  <Font name="Cambria Bold Italic" size="58.0" />
+               </font>
+            </Label>
+         </top>
+         <center>
+            <BorderPane prefHeight="337.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+               <bottom>
+                  <ScrollPane prefHeight="307.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+                     <content>
+                        <ListView prefHeight="296.0" prefWidth="600.0" />
+                     </content>
+                  </ScrollPane>
+               </bottom>
+            </BorderPane>
+         </center>
+      </BorderPane>
+   </children>
+</Pane>
