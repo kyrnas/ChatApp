@@ -78,8 +78,35 @@ public class Server{
 				}
 			}
 			
-			public void run(){
-					
+			public void updateClients(String message, ArrayList<String> recipients) {
+				for(int i = 0; i < clients.size(); i++) {
+					ClientThread t = clients.get(i);
+					if(recipients.contains(Integer.toString(t.count))) {
+						try {
+						 t.out.writeObject(message);
+						}
+						catch(Exception e) {}
+					}
+				}
+			}
+			
+			public void updateClientList() {
+				ArrayList<String> clientList = new ArrayList<>();
+				for(int i = 0; i < clients.size(); i++) {
+					ClientThread t = clients.get(i);
+					clientList.add(Integer.toString(t.count));
+				}
+				MessageData result = new MessageData(clientList, "");
+				for(int i = 0; i < clients.size(); i++) {
+					ClientThread t = clients.get(i);
+					try {
+						 t.out.writeObject(result);
+					}
+					catch(Exception e) {}
+				}
+			}
+			
+			public void run(){	
 				try {
 					in = new ObjectInputStream(connection.getInputStream());
 					out = new ObjectOutputStream(connection.getOutputStream());
@@ -90,18 +117,32 @@ public class Server{
 				}
 				
 				updateClients("new client on server: client #"+count);
+				updateClientList();
 					
 				 while(true) {
 					    try {
-					    	String data = in.readObject().toString();
-					    	callback.accept("client: " + count + " sent: " + data);
-					    	updateClients("client #"+count+" said: "+data);
+					    	MessageData message = (MessageData) in.readObject();
+					    	
+					    	String data = message.text;
+					    	if(message.recipients.size() == 1) {
+					    		callback.accept("client: " + count + " sent a private message to " + message.recipients.toString() + ": " + data);
+					    		updateClients("client #"+count+" said privately: " + data, message.recipients);
+					    	}
+					    	else if(message.recipients.size() == clients.size()) {
+					    		callback.accept("client: " + count + " sent a message to everyone: " + data);
+					    		updateClients("client #"+count+" said to everyone: " + data, message.recipients);
+					    	}
+					    	else {
+					    		callback.accept("client: " + count + " sent a group private message to " + message.recipients.toString() + ": " + data);
+					    		updateClients("client #"+count+" said to a group of people: " + data, message.recipients);
+					    	}
 					    	
 					    	}
 					    catch(Exception e) {
 					    	callback.accept("OOOOPPs...Something wrong with the socket from client: " + count + "....closing down!");
-					    	updateClients("Client #"+count+" has left the server!");
 					    	clients.remove(this);
+					    	updateClients("Client #"+count+" has left the server!");
+					    	updateClientList();
 					    	break;
 					    }
 					}

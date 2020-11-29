@@ -34,7 +34,7 @@ public class GuiServer extends Application{
 	Client clientConnection;
 	private static Stage pStage;
 	
-	ListView<String> listItems, listItems2;
+	ListView<String> listItems, listItems2, listItems3;
 	
 	
 	public static Stage getPrimaryStage() {
@@ -81,7 +81,10 @@ public class GuiServer extends Application{
 											clientConnection = new Client(data->{
 							Platform.runLater(()->{listItems2.getItems().add(data.toString());
 											});
-							});
+							}, data->{
+								Platform.runLater(()->{listItems2.getItems().add(data.toString());
+								});
+				}); // I tried adding another serializable parameter that should reference the client list.
 							
 											clientConnection.start();
 		});
@@ -99,10 +102,11 @@ public class GuiServer extends Application{
 		
 		listItems = new ListView<String>();
 		listItems2 = new ListView<String>();
+		listItems3 = new ListView<String>();
 		
 		c1 = new TextField();
 		b1 = new Button("Send");
-		b1.setOnAction(e->{clientConnection.send(c1.getText()); c1.clear();});
+		b1.setOnAction(e->{clientConnection.send(c1.getText(), null); c1.clear();}); // CHANGE THIS to add recipients
 		
 		sceneMap = new HashMap<String, Scene>();
 		

@@ -3,6 +3,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.function.Consumer;
 
 
@@ -16,10 +17,11 @@ public class Client extends Thread{
 	ObjectInputStream in;
 	
 	private Consumer<Serializable> callback;
+	private Consumer<Serializable> clientList;
 	
-	Client(Consumer<Serializable> call){
-	
+	Client(Consumer<Serializable> call, Consumer<Serializable> clie){
 		callback = call;
+		clientList = clie;
 	}
 	
 	public void run() {
@@ -35,18 +37,24 @@ public class Client extends Thread{
 		while(true) {
 			 
 			try {
-			String message = in.readObject().toString();
-			callback.accept(message);
+			MessageData data = (MessageData) in.readObject();
+			String message = data.text;
+			if(message.length() == 0) {
+				// add code here to update the people on the server
+			}
+			else {
+				callback.accept(message);
+			}
 			}
 			catch(Exception e) {}
 		}
 	
     }
 	
-	public void send(String data) {
-		
+	public void send(String data, ArrayList<String> recipients) {
+		MessageData message = new MessageData(recipients, data);
 		try {
-			out.writeObject(data);
+			out.writeObject(message);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
