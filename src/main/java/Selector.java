@@ -16,8 +16,9 @@ public class Selector {
 
 	Scene clientGui;
 	Scene serverGui;
-	
-	
+	Client clientConnection;
+	Server serverConnection;
+	ListView<String> listItems, listItems2;
 	
 	@FXML
 	public void clientAction(ActionEvent e) throws IOException {
@@ -55,6 +56,12 @@ public class Selector {
 	
 	public Scene createClientGui() {
 		try {
+			listItems2 = new ListView<String>();
+			clientConnection = new Client(data->{
+Platform.runLater(()->{listItems2.getItems().add(data.toString());
+});});
+			clientConnection.start();
+
 			Parent root = FXMLLoader.load(getClass().getResource("/fxml/chat.fxml"));
 			return new Scene(root, 800, 800);
 		} catch (IOException e) { 
@@ -65,8 +72,15 @@ public class Selector {
 	
 	public Scene createServerGui() {
 		try {
+			listItems = new ListView<String>();
 			Parent root = FXMLLoader.load(getClass().getResource("/fxml/server.fxml"));
+			serverConnection = new Server(data -> {
+				Platform.runLater(()->{
+					listItems.getItems().add(data.toString());
+				});
+			});
 			return new Scene(root, 610, 500);
+			
 		} catch (IOException e) { 
 			e.printStackTrace();
 		}

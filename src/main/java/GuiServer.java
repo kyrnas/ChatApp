@@ -139,6 +139,13 @@ public class GuiServer extends Application{
 		
 		pane.setCenter(listItems);
 	
+		serverConnection = new Server(data -> {
+			
+			Platform.runLater(()->{
+				listItems.getItems().add(data.toString());
+			});
+
+		});
 		return new Scene(pane, 500, 400);
 		
 		
