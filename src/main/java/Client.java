@@ -56,21 +56,21 @@ public class Client extends Thread{
 		//been commentented out below to be worked on
 		
 		
-//		while(true) {
-//			 
-//			try {
-//			MessageData data = (MessageData) in.readObject();
-//			String message = data.text;
-//			if(message.length() == 0) {
-//				//ObservableList<String> obs = FXCollections.observableList(data.recipients);
-//				//clientList.accept(data.recipients);
-//			}
-//			else {
-//				callback.accept(message);
-//			}
-//			}
-//			catch(Exception e) {}
-//		}
+		while(true) {
+			 
+			try {
+			MessageData data = (MessageData) in.readObject();
+			String message = data.text;
+			if(message.length() == 0) {
+				//ObservableList<String> obs = FXCollections.observableList(data.recipients);
+				//clientList.accept(data.recipients);
+			}
+			else {
+				callback.accept(message);
+			}
+			}
+			catch(Exception e) {}
+		}
 	
     }
 	

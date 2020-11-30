@@ -1,9 +1,12 @@
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -12,7 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class Selector {
+public class Selector implements Initializable{
 
 	Scene clientGui;
 	Scene serverGui;
@@ -56,11 +59,11 @@ public class Selector {
 	
 	public Scene createClientGui() {
 		try {
-			listItems2 = new ListView<String>();
-			clientConnection = new Client(data->{
-Platform.runLater(()->{listItems2.getItems().add(data.toString());
-});});
-			clientConnection.start();
+			//listItems2 = new ListView<String>();
+			//clientConnection = new Client(data->{
+//Platform.runLater(()->{listItems2.getItems().add(data.toString());
+//});});
+			//clientConnection.start();
 
 			Parent root = FXMLLoader.load(getClass().getResource("/fxml/chat.fxml"));
 			return new Scene(root, 800, 800);
@@ -72,19 +75,25 @@ Platform.runLater(()->{listItems2.getItems().add(data.toString());
 	
 	public Scene createServerGui() {
 		try {
-			listItems = new ListView<String>();
+			//listItems = new ListView<String>();
+			//serverConnection = new Server(data -> {
+			//	Platform.runLater(()->{
+			//		listItems.getItems().add(data.toString());
+			//	});
+			//});
 			Parent root = FXMLLoader.load(getClass().getResource("/fxml/server.fxml"));
-			serverConnection = new Server(data -> {
-				Platform.runLater(()->{
-					listItems.getItems().add(data.toString());
-				});
-			});
 			return new Scene(root, 610, 500);
 			
 		} catch (IOException e) { 
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
