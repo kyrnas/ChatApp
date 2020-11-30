@@ -16,7 +16,7 @@
    <bottom>
       <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="800.0" BorderPane.alignment="CENTER">
          <children>
-            <TextField maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="400.0" style="-fx-background-color: aliceblue;">
+            <TextField fx:id="userText" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyReleased="#keyReleased" prefHeight="50.0" prefWidth="400.0" style="-fx-background-color: aliceblue;">
                <HBox.margin>
                   <Insets left="45.0" />
                </HBox.margin>

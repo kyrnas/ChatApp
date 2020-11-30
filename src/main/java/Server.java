@@ -38,17 +38,17 @@ public class Server{
 		  
 			
 		    while(true) {
-		
 				ClientThread c = new ClientThread(mysocket.accept(), count);
 				callback.accept("client has connected to server: " + "client #" + count);
 				clients.add(c);
 				c.start();
 				
 				count++;
-				
+				System.out.println("Attempting to connect a new client");
 			    }
 			}//end of try
 				catch(Exception e) {
+					e.printStackTrace();
 					callback.accept("Server socket did not launch");
 				}
 			}//end of while
@@ -115,7 +115,7 @@ public class Server{
 				catch(Exception e) {
 					System.out.println("Streams not open");
 				}
-				
+				System.out.println("Started client thread");
 				updateClients("new client on server: client #"+count);
 				updateClientList();
 					
@@ -128,7 +128,7 @@ public class Server{
 					    		callback.accept("client: " + count + " sent a private message to " + message.recipients.toString() + ": " + data);
 					    		updateClients("client #"+count+" said privately: " + data, message.recipients);
 					    	}
-					    	else if(message.recipients.size() == clients.size()) {
+					    	else if(message.recipients.size() == 0) {
 					    		callback.accept("client: " + count + " sent a message to everyone: " + data);
 					    		updateClients("client #"+count+" said to everyone: " + data, message.recipients);
 					    	}

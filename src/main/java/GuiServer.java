@@ -1,4 +1,5 @@
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import javafx.application.Application;
@@ -30,8 +31,8 @@ public class GuiServer extends Application{
 	VBox clientBox;
 	Scene startScene;
 	BorderPane startPane;
-	Server serverConnection;
-	Client clientConnection;
+	static Server serverConnection = null;
+	static Client clientConnection = null;
 	private static Stage pStage;
 	
 	ListView<String> listItems, listItems2, listItems3;
@@ -41,12 +42,11 @@ public class GuiServer extends Application{
         return pStage;
     }
 	
-	 public void setPrimaryStage(Stage pStage) {
-		 GuiServer.pStage = pStage;
-	    }
+	public void setPrimaryStage(Stage pStage) {
+		GuiServer.pStage = pStage;
+	}
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		launch(args);
 	}
 
@@ -54,9 +54,9 @@ public class GuiServer extends Application{
 	public void start(Stage primaryStage) throws Exception {
 		// TODO Auto-generated method stub
 		pStage = primaryStage;
-		primaryStage.setTitle("The Networked Client/Server GUI Example");
+		primaryStage.setTitle("Chat application");
 		
-		this.serverChoice = new Button("Server");
+		/*this.serverChoice = new Button("Server");
 		this.serverChoice.setStyle("-fx-pref-width: 300px");
 		this.serverChoice.setStyle("-fx-pref-height: 300px");
 		
@@ -87,12 +87,12 @@ public class GuiServer extends Application{
 				}); // I tried adding another serializable parameter that should reference the client list.
 							
 											clientConnection.start();
-		});
+		});*/
 		
-		this.buttonBox = new HBox(400, serverChoice, clientChoice);
+		/*this.buttonBox = new HBox(400, serverChoice, clientChoice);
 		startPane = new BorderPane();
 		startPane.setPadding(new Insets(70));
-		startPane.setCenter(buttonBox);
+		startPane.setCenter(buttonBox);*/
 		
 		
 		//System.out.println("Test  = "+ FXMLLoader.load(getClass().getResource("/fxml/choice.fxml")));
@@ -100,7 +100,7 @@ public class GuiServer extends Application{
 		
 		startScene = new Scene(root, 800,800);
 		
-		listItems = new ListView<String>();
+		/*listItems = new ListView<String>();
 		listItems2 = new ListView<String>();
 		listItems3 = new ListView<String>();
 		
@@ -111,11 +111,14 @@ public class GuiServer extends Application{
 		sceneMap = new HashMap<String, Scene>();
 		
 		sceneMap.put("server",  createServerGui());
-		sceneMap.put("client",  createClientGui());
+		sceneMap.put("client",  createClientGui());*/
 		
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent t) {
+            	if(clientConnection != null) {
+            		clientConnection.interrupt();
+            	}
                 Platform.exit();
                 System.exit(0);
             }
@@ -143,10 +146,29 @@ public class GuiServer extends Application{
 	
 	public Scene createClientGui() {
 		
-		clientBox = new VBox(10, c1,b1,listItems2);
-		clientBox.setStyle("-fx-background-color: blue");
-		return new Scene(clientBox, 400, 300);
-		
+		try {
+			Parent root = FXMLLoader.load(getClass().getResource("/fxml/chat.fxml"));
+			return new Scene(root, 800,800);
+		} catch (IOException e) { 
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static void createClientConnection(ListView<String> list1) {
+		clientConnection = new Client(data->{
+				Platform.runLater(()->{list1.getItems().add(data.toString());
+								});
+			});
+		clientConnection.run();
+	}
+	
+	public static void createServerConnection(ListView<String> list) {
+		serverConnection = new Server(data -> {
+			Platform.runLater(()->{
+				list.getItems().add(data.toString());
+			});
+		});
 	}
 
 }

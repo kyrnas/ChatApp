@@ -6,6 +6,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 
 
 public class Client extends Thread{
@@ -19,9 +22,9 @@ public class Client extends Thread{
 	private Consumer<Serializable> callback;
 	private Consumer<Serializable> clientList;
 	
-	Client(Consumer<Serializable> call, Consumer<Serializable> clie){
+	Client(Consumer<Serializable> call/*, Consumer<Serializable> clie*/){
 		callback = call;
-		clientList = clie;
+		//clientList = clie;
 	}
 	
 	public void run() {
@@ -31,8 +34,9 @@ public class Client extends Thread{
 	    out = new ObjectOutputStream(socketClient.getOutputStream());
 	    in = new ObjectInputStream(socketClient.getInputStream());
 	    socketClient.setTcpNoDelay(true);
+	    System.out.println("Created connection");
 		}
-		catch(Exception e) {}
+		catch(Exception e) { System.out.println("Could not connect to the server");}
 		
 		while(true) {
 			 
@@ -40,7 +44,8 @@ public class Client extends Thread{
 			MessageData data = (MessageData) in.readObject();
 			String message = data.text;
 			if(message.length() == 0) {
-				// add code here to update the people on the server
+				//ObservableList<String> obs = FXCollections.observableList(data.recipients);
+				//clientList.accept(data.recipients);
 			}
 			else {
 				callback.accept(message);

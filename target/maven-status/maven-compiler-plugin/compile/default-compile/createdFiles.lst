@@ -1,9 +1,9 @@
 GuiServer.class
 Client.class
+Chat.class
+GuiServer$1.class
 Selector.class
 Server$ClientThread.class
 ServerController.class
 Server.class
-Chat.class
-GuiServer$1.class
 Server$TheServer.class
