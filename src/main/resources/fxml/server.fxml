@@ -20,7 +20,7 @@
          <center>
             <BorderPane prefHeight="337.0" prefWidth="600.0" BorderPane.alignment="CENTER">
                <bottom>
-                  <ScrollPane prefHeight="307.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+                  <ScrollPane fitToWidth="true" prefHeight="307.0" prefWidth="600.0" BorderPane.alignment="CENTER">
                      <content>
                         <ListView fx:id="log" prefHeight="296.0" prefWidth="600.0" />
                      </content>
