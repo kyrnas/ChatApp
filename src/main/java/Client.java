@@ -36,7 +36,8 @@ public class Client extends Thread{
 	    socketClient.setTcpNoDelay(true);
 	    System.out.println("Created connection");
 		}
-		catch(Exception e) { System.out.println("Could not connect to the server");}
+		catch(Exception e) { System.out.println("Could not connect to the server");
+		return;}//added return 11/30/2020 will devolop full safe stop method 
 		
 		while(true) {
 			 
