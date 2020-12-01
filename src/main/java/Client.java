@@ -15,7 +15,7 @@ import javafx.util.Duration;
 
 
 
-public class Client extends Thread implements Runnable{
+public class Client extends Thread{
 
 	
 	Socket socketClient;
