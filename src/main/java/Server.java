@@ -28,6 +28,13 @@ public class Server{
 		server.start();
 	}
 	
+	void close() {
+		for(ClientThread cur : clients) {
+			cur.interrupt();
+		}
+		server.interrupt();
+	}
+	
 	
 	public class TheServer extends Thread{
 		
@@ -35,6 +42,7 @@ public class Server{
 		
 			try(ServerSocket mysocket = new ServerSocket(5555);){
 		    System.out.println("Server is waiting for a client!");
+		    callback.accept("Server started");
 		  
 			
 		    while(true) {
@@ -44,7 +52,7 @@ public class Server{
 				c.start();
 				
 				count++;
-				System.out.println("Attempting to connect a new client");
+				c.updateClientList();
 			    }
 			}//end of try
 				catch(Exception e) {
@@ -115,9 +123,8 @@ public class Server{
 				catch(Exception e) {
 					System.out.println("Streams not open");
 				}
-				System.out.println("Started client thread");
-				updateClients("new client on server: client #"+count);
-				updateClientList();
+				//updateClients("new client on server: client #"+count);
+				//updateClientList();
 					
 				 while(true) {
 					    try {
@@ -130,7 +137,7 @@ public class Server{
 					    	}
 					    	else if(message.recipients.size() == 0) {
 					    		callback.accept("client: " + count + " sent a message to everyone: " + data);
-					    		updateClients("client #"+count+" said to everyone: " + data, message.recipients);
+					    		updateClients("client #"+count+" said to everyone: " + data);
 					    	}
 					    	else {
 					    		callback.accept("client: " + count + " sent a group private message to " + message.recipients.toString() + ": " + data);

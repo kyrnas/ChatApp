@@ -22,14 +22,6 @@ public class Chat implements Initializable{
 	@FXML
 	TextField userText;
 	ArrayList<String> recipients = new ArrayList<>();
-	Client clientConnection;
-	
-	/*@FXML
-	public void initialize() {
-		chatList = new ListView<>();
-		userList = new ListView<>();
-		GuiServer.createClientConnection(chatList);
-	}*/
 	
 	@FXML
 	public void send(ActionEvent event) {
@@ -50,9 +42,7 @@ public class Chat implements Initializable{
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		chatList = new ListView<>();
-		userList = new ListView<>();
-		GuiServer.createClientConnection(chatList);
-		
+		chatList.getItems().add("Welcome to the chat. Please don't be rude to others");
+		userList.getItems().add("YOU");
 	}
 }

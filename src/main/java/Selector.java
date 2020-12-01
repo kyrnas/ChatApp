@@ -21,31 +21,18 @@ public class Selector implements Initializable{
 	Scene serverGui;
 	Client clientConnection;
 	Server serverConnection;
+	ServerController serv;
+	Chat chat;
 	ListView<String> listItems, listItems2;
 	
 	@FXML
 	public void clientAction(ActionEvent e) throws IOException {
-		/*Stage primaryStage = GuiServer.getPrimaryStage();
-		VBox clientBox;
-		TextField c1;
-		Button b1;
-		ListView<String> listItems2;
-		listItems2 = new ListView<String>();
-		c1 = new TextField();
-		b1 = new Button("Send");
-		clientBox = new VBox(10, c1,b1,listItems2);
-		clientBox.setStyle("-fx-background-color: blue");
-		Scene Client =  new Scene(clientBox, 400, 300);
-		primaryStage.setScene(Client);
-		primaryStage.setTitle("This is a client");
-		//clientConnection = new Client(data->{
-			//Platform.runLater(()->{listItems2.getItems().add(data.toString());*/
-		//System.out.println("client called");
-		
 		clientGui = createClientGui();
 		Stage primaryStage = GuiServer.getPrimaryStage();
 		primaryStage.setScene(clientGui);
 		primaryStage.setTitle("Chat");
+		
+		GuiServer.createClientConnection();
 
 	}
 	
@@ -55,17 +42,15 @@ public class Selector implements Initializable{
 		Stage primaryStage = GuiServer.getPrimaryStage();
 		primaryStage.setScene(serverGui);
 		primaryStage.setTitle("Server");
+		
+		GuiServer.createServerConnection();
 	}
 	
 	public Scene createClientGui() {
 		try {
-			//listItems2 = new ListView<String>();
-			//clientConnection = new Client(data->{
-//Platform.runLater(()->{listItems2.getItems().add(data.toString());
-//});});
-			//clientConnection.start();
-
-			Parent root = FXMLLoader.load(getClass().getResource("/fxml/chat.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/chat.fxml"));
+			Parent root = loader.load();
+			chat = loader.getController();
 			return new Scene(root, 800, 800);
 		} catch (IOException e) { 
 			e.printStackTrace();
@@ -75,14 +60,10 @@ public class Selector implements Initializable{
 	
 	public Scene createServerGui() {
 		try {
-			//listItems = new ListView<String>();
-			//serverConnection = new Server(data -> {
-			//	Platform.runLater(()->{
-			//		listItems.getItems().add(data.toString());
-			//	});
-			//});
-			Parent root = FXMLLoader.load(getClass().getResource("/fxml/server.fxml"));
-			return new Scene(root, 610, 500);
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/server.fxml"));
+			Parent root = loader.load();
+			serv = loader.getController();
+			return new Scene(root, 600, 500);
 			
 		} catch (IOException e) { 
 			e.printStackTrace();

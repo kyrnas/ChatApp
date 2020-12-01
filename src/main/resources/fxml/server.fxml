@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
@@ -18,15 +18,11 @@
             </Label>
          </top>
          <center>
-            <BorderPane prefHeight="337.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-               <bottom>
-                  <ScrollPane fitToWidth="true" prefHeight="307.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-                     <content>
-                        <ListView fx:id="log" prefHeight="296.0" prefWidth="600.0" />
-                     </content>
-                  </ScrollPane>
-               </bottom>
-            </BorderPane>
+            <ListView fx:id="log" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets left="1.0" />
+               </BorderPane.margin>
+            </ListView>
          </center>
       </BorderPane>
    </children>

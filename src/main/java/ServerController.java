@@ -8,7 +8,7 @@ import javafx.scene.control.ListView;
 
 public class ServerController implements Initializable{
 	@FXML
-	ListView<String> log = null;
+	ListView<String> log;
 	Server serverConnection;
 	
 	/*@FXML
@@ -20,8 +20,7 @@ public class ServerController implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
-		log = new ListView<String>();
-		GuiServer.createServerConnection(log);
+		//log.getItems().add("This is just the scene");
 		
 	}
 }
