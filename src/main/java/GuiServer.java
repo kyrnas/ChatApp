@@ -85,7 +85,7 @@ public class GuiServer extends Application{
 					select.chat.chatList.getItems().add(data.toString());
 				});
 			});
-		clientConnection.run();
+		clientConnection.start();
 	}
 	
 	public static void createServerConnection() {

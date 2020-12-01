@@ -48,14 +48,14 @@ public class Client extends Thread{
 			alert.setContentText("client didn't connect");
 	
 			alert.showAndWait();
-		return;}//added return 11/30/2020 will develop full safe stop method 
+			//return
+			}//added return 11/30/2020 will develop full safe stop method 
 		
-		PauseTransition pause = new PauseTransition(Duration.seconds(2)); // added a pause before going into the while true loop so that we could test some stuff
-		pause.setOnFinished(e->cycle());
-		pause.play();
+		//PauseTransition pause = new PauseTransition(Duration.seconds(2)); // added a pause before going into the while true loop so that we could test some stuff
+		//pause.setOnFinished(e->cycle());
+		//pause.play();
 		
-		/*while(true) {
-			
+		while(true) {
 			try {
 			MessageData data = (MessageData) in.readObject();
 			String message = data.text;
@@ -67,29 +67,11 @@ public class Client extends Thread{
 				callback.accept(message);
 			}
 			}
-			catch(Exception e) {}
-		}*/
+			catch(Exception e) {e.printStackTrace();}
+		}
 	
     }
 	
-	void cycle() {
-		while(true) {
-			try {
-				MessageData data = (MessageData) in.readObject();
-				System.out.println("MESSAGE RECIEVED");
-				String message = data.text;
-				if(message.length() == 0) {
-					//ObservableList<String> obs = FXCollections.observableList(data.recipients);
-					//clientList.accept(data.recipients);
-				}
-				else {
-					callback.accept(message);
-				}
-			}
-			catch(Exception e) {System.out.println("No message recieved");}
-			
-		}
-	}
 	
 	public void send(String data, ArrayList<String> recipients) {
 		MessageData message = new MessageData(recipients, data);

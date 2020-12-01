@@ -52,7 +52,7 @@ public class Server{
 				c.start();
 				
 				count++;
-				c.updateClientList();
+				//c.updateClientList();
 			    }
 			}//end of try
 				catch(Exception e) {
@@ -78,9 +78,10 @@ public class Server{
 			
 			public void updateClients(String message) {
 				for(int i = 0; i < clients.size(); i++) {
+					MessageData data = new MessageData(null, message);
 					ClientThread t = clients.get(i);
 					try {
-					 t.out.writeObject(message);
+					 t.out.writeObject(data);
 					}
 					catch(Exception e) {}
 				}
@@ -114,6 +115,7 @@ public class Server{
 				}
 			}
 			
+			@Override
 			public void run(){	
 				try {
 					in = new ObjectInputStream(connection.getInputStream());
