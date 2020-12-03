@@ -76,7 +76,7 @@ public class Server{
 				this.count = count;	
 			}
 			
-			public void updateClients(String message) {
+			public synchronized void updateClients(String message) {
 				for(int i = 0; i < clients.size(); i++) {
 					MessageData data = new MessageData(null, message);
 					ClientThread t = clients.get(i);
@@ -87,7 +87,7 @@ public class Server{
 				}
 			}
 			
-			public void updateClients(String message, ArrayList<String> recipients) {
+			public synchronized void updateClients(String message, ArrayList<String> recipients) {
 				for(int i = 0; i < clients.size(); i++) {
 					ClientThread t = clients.get(i);
 					if(recipients.contains(Integer.toString(t.count))) {
@@ -99,7 +99,7 @@ public class Server{
 				}
 			}
 			
-			public void updateClientList() {
+			public synchronized void updateClientList() {
 				ArrayList<String> clientList = new ArrayList<>();
 				for(int i = 0; i < clients.size(); i++) {
 					ClientThread t = clients.get(i);
@@ -125,8 +125,8 @@ public class Server{
 				catch(Exception e) {
 					System.out.println("Streams not open");
 				}
-				//updateClients("new client on server: client #"+count);
-				//updateClientList();
+				updateClients("new client on server: client #"+count);
+				updateClientList();
 					
 				 while(true) {
 					    try {

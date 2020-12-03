@@ -43,6 +43,5 @@ public class Chat implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		chatList.getItems().add("Welcome to the chat. Please don't be rude to others");
-		userList.getItems().add("YOU");
 	}
 }

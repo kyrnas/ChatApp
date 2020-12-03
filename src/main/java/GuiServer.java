@@ -1,9 +1,12 @@
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -83,6 +86,11 @@ public class GuiServer extends Application{
 		clientConnection = new Client(data->{
 				Platform.runLater(()->{
 					select.chat.chatList.getItems().add(data.toString());
+				});
+			}, data->{
+				Platform.runLater(()->{
+					ObservableList<String> obs = FXCollections.observableList((List<String>) data);
+					select.chat.userList.setItems(obs);
 				});
 			});
 		clientConnection.start();

@@ -24,11 +24,11 @@ public class Client extends Thread{
 	ObjectInputStream in;
 	
 	private Consumer<Serializable> callback;
-	//private Consumer<Serializable> clientList;
+	private Consumer<Serializable> clientList;
 	
-	Client(Consumer<Serializable> call/*, Consumer<Serializable> clie*/){
+	Client(Consumer<Serializable> call, Consumer<Serializable> clie){
 		callback = call;
-		//clientList = clie;
+		clientList = clie;
 	}
 	
 	public void run() {
@@ -48,12 +48,9 @@ public class Client extends Thread{
 			alert.setContentText("client didn't connect");
 	
 			alert.showAndWait();
-			//return
+			return;
 			}//added return 11/30/2020 will develop full safe stop method 
 		
-		//PauseTransition pause = new PauseTransition(Duration.seconds(2)); // added a pause before going into the while true loop so that we could test some stuff
-		//pause.setOnFinished(e->cycle());
-		//pause.play();
 		
 		while(true) {
 			try {
@@ -61,10 +58,14 @@ public class Client extends Thread{
 			String message = data.text;
 			if(message.length() == 0) {
 				//ObservableList<String> obs = FXCollections.observableList(data.recipients);
-				//clientList.accept(data.recipients);
+				synchronized(clientList) {
+					clientList.accept(data.recipients);
+				}
 			}
 			else {
-				callback.accept(message);
+				synchronized(callback) {
+					callback.accept(message);
+				}
 			}
 			}
 			catch(Exception e) {e.printStackTrace();}
