@@ -40,7 +40,7 @@
             <Insets right="10.0" top="10.0" />
          </BorderPane.margin>
          <children>
-            <ListView fx:id="userList" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="200.0" style="-fx-background-color: aliceblue;" />
+            <ListView fx:id="userList" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="200.0" style="-fx-background-color: aliceblue;" onMouseClicked="#handleMouseClick" />
          </children>
       </VBox>
    </right>

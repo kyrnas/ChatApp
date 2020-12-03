@@ -13,6 +13,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 
 public class Chat implements Initializable{
 	@FXML
@@ -39,7 +40,9 @@ public class Chat implements Initializable{
 	public ListView<String> getChatList() {
 		return chatList;
 	}
-
+	@FXML public void handleMouseClick(MouseEvent arg0) {
+	    System.out.println("clicked on " + userList.getSelectionModel().getSelectedItem());
+	}
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		chatList.getItems().add("Welcome to the chat. Please don't be rude to others");
