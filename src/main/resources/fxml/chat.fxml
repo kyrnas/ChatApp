@@ -55,7 +55,7 @@
                   <Font name="System Bold" size="22.0" />
                </font>
             </Label>
-            <ListView fx:id="recipientsView" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: aliceblue;">
+            <ListView fx:id="recipientsView" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#mouseRecipients" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: aliceblue;">
                <VBox.margin>
                   <Insets />
                </VBox.margin>

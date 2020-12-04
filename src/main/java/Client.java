@@ -6,12 +6,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-import javafx.animation.PauseTransition;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.util.Duration;
 
 
 
@@ -40,16 +34,10 @@ public class Client extends Thread{
 		    socketClient.setTcpNoDelay(true);
 		}
 		catch(Exception e) { 
-			System.out.println("Could not connect to the server");
-			System.out.println("Exception e caught ");
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("connection failure");
-			alert.setHeaderText("Exception e caught,");
-			alert.setContentText("client didn't connect");
-	
-			alert.showAndWait();
+			System.out.println("Could not connect to the server. Make sure it is running.");
+			System.exit(1);
 			return;
-			}//added return 11/30/2020 will develop full safe stop method 
+			}
 		
 		
 		while(true) {
@@ -57,7 +45,6 @@ public class Client extends Thread{
 			MessageData data = (MessageData) in.readObject();
 			String message = data.text;
 			if(message.length() == 0) {
-				//ObservableList<String> obs = FXCollections.observableList(data.recipients);
 				synchronized(clientList) {
 					clientList.accept(data.recipients);
 				}
@@ -68,15 +55,16 @@ public class Client extends Thread{
 				}
 			}
 			}
-			catch(Exception e) {e.printStackTrace();}
+			catch(Exception e) {System.out.println("Connection to the server lost"); System.exit(0);}
 		}
 	
     }
 	
 	
-	public void send(String data, ArrayList<String> recipients) {
+	public synchronized void send(String data, ArrayList<String> recipients) {
 		MessageData message = new MessageData(recipients, data);
 		try {
+			//sending one list of recipients here.
 			out.writeObject(message);
 		} catch (IOException e) {
 			e.printStackTrace();

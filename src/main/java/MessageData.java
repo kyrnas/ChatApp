@@ -3,11 +3,7 @@ import java.util.ArrayList;
 
 public class MessageData implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -8342665851206839707L;
-	
+	private static final long serialVersionUID = 4748665020781195022L;	
 	public ArrayList<String> recipients;
 	public String text;
 	
@@ -16,4 +12,7 @@ public class MessageData implements Serializable {
 		text = message;
 	}
 
+	public String toString() {
+		return "Message: " + text + " recipients: " + recipients.toString(); 
+	}
 }

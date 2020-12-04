@@ -6,8 +6,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-import javafx.application.Platform;
-import javafx.scene.control.ListView;
 /*
  * Clicker: A: I really get it    B: No idea what you are talking about
  * C: kind of following
@@ -52,7 +50,7 @@ public class Server{
 				c.start();
 				
 				count++;
-				//c.updateClientList();
+				c.updateClientList();
 			    }
 			}//end of try
 				catch(Exception e) {
@@ -76,7 +74,7 @@ public class Server{
 				this.count = count;	
 			}
 			
-			public synchronized void updateClients(String message) {
+			public void updateClients(String message) {
 				for(int i = 0; i < clients.size(); i++) {
 					MessageData data = new MessageData(null, message);
 					ClientThread t = clients.get(i);
@@ -87,19 +85,26 @@ public class Server{
 				}
 			}
 			
-			public synchronized void updateClients(String message, ArrayList<String> recipients) {
+			public void updateClients(String message, ArrayList<String> recipients) {
+				MessageData data = new MessageData(null, message);
 				for(int i = 0; i < clients.size(); i++) {
 					ClientThread t = clients.get(i);
+					if(t.equals(this)) {
+						continue;
+					}
 					if(recipients.contains(Integer.toString(t.count))) {
 						try {
-						 t.out.writeObject(message);
+						 t.out.writeObject(data);
 						}
 						catch(Exception e) {}
 					}
+					try {
+						this.out.writeObject(data);
+					}catch(Exception e) {}
 				}
 			}
 			
-			public synchronized void updateClientList() {
+			public void updateClientList() {
 				ArrayList<String> clientList = new ArrayList<>();
 				for(int i = 0; i < clients.size(); i++) {
 					ClientThread t = clients.get(i);
@@ -127,23 +132,29 @@ public class Server{
 				}
 				updateClients("new client on server: client #"+count);
 				updateClientList();
+				
+				MessageData message = null;
 					
 				 while(true) {
 					    try {
-					    	MessageData message = (MessageData) in.readObject();
 					    	
+					    	message = (MessageData) in.readObject(); // for some reason keeps the list of recipients from previous time, but changes the message
 					    	String data = message.text;
+					    	ArrayList<String> recip = message.recipients;
 					    	if(message.recipients.size() == 1) {
-					    		callback.accept("client: " + count + " sent a private message to " + message.recipients.toString() + ": " + data);
-					    		updateClients("client #"+count+" said privately: " + data, message.recipients);
+					    		callback.accept("client: " + count + " sent a private message to " + recip.toString() + ": " + data);
+					    		updateClients("client #"+count+" said privately: " + data, recip);
+					    		message = null;
 					    	}
 					    	else if(message.recipients.size() == 0) {
 					    		callback.accept("client: " + count + " sent a message to everyone: " + data);
 					    		updateClients("client #"+count+" said to everyone: " + data);
+					    		message = null;
 					    	}
 					    	else {
-					    		callback.accept("client: " + count + " sent a group private message to " + message.recipients.toString() + ": " + data);
-					    		updateClients("client #"+count+" said to a group of people: " + data, message.recipients);
+					    		callback.accept("client: " + count + " sent a group private message to " + recip.toString() + ": " + data);
+					    		updateClients("client #"+count+" said to a group of people: " + data, recip);
+					    		message = null;
 					    	}
 					    	
 					    	}

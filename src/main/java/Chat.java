@@ -21,15 +21,19 @@ public class Chat implements Initializable{
 	@FXML
 	ListView<String> userList;
 	@FXML
+	ListView<String> recipientsView;
+	@FXML
 	TextField userText;
 	ArrayList<String> recipients = new ArrayList<>();
 	
 	@FXML
 	public void send(ActionEvent event) {
 		GuiServer.clientConnection.send(userText.getText(), recipients);
-		recipients.clear();
 		userText.clear();
+		recipients.clear();
+		updateRecipientsList();
 	}
+	
 	@FXML
 	public void keyReleased(KeyEvent event) {
 		if(event.getCode().equals(KeyCode.ENTER)) {
@@ -40,9 +44,28 @@ public class Chat implements Initializable{
 	public ListView<String> getChatList() {
 		return chatList;
 	}
-	@FXML public void handleMouseClick(MouseEvent arg0) {
-	    System.out.println("clicked on " + userList.getSelectionModel().getSelectedItem());
+	
+	@FXML 
+	public void handleMouseClick(MouseEvent event) {
+		String selected = userList.getSelectionModel().getSelectedItem();
+		if(!recipients.contains(selected)) {
+			recipients.add(selected);
+			updateRecipientsList();
+		}
 	}
+	
+	@FXML
+	public void mouseRecipients(MouseEvent event) {
+		String selected = recipientsView.getSelectionModel().getSelectedItem();
+		recipients.remove(selected);
+		updateRecipientsList();
+	}
+	
+	public void updateRecipientsList() {
+		ObservableList<String> obs = FXCollections.observableList((List<String>) recipients);
+		recipientsView.setItems(obs);
+	}
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		chatList.getItems().add("Welcome to the chat. Please don't be rude to others");
