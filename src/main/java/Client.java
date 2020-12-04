@@ -66,6 +66,7 @@ public class Client extends Thread{
 		try {
 			//sending one list of recipients here.
 			out.writeObject(message);
+			out.reset();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
