@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -5,11 +6,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.function.Consumer;
-
-/*
- * Clicker: A: I really get it    B: No idea what you are talking about
- * C: kind of following
- */
 
 public class Server{
 
@@ -65,13 +61,13 @@ public class Server{
 			
 		
 			Socket connection;
-			int count;
+			int c;
 			ObjectInputStream in;
 			ObjectOutputStream out;
 			
 			ClientThread(Socket s, int count){
 				this.connection = s;
-				this.count = count;	
+				this.c = count;	
 			}
 			
 			public void updateClients(String message) {
@@ -89,26 +85,26 @@ public class Server{
 				MessageData data = new MessageData(null, message);
 				for(int i = 0; i < clients.size(); i++) {
 					ClientThread t = clients.get(i);
-					if(t.equals(this)) {
+					if(t.c == this.c) {
 						continue;
 					}
-					if(recipients.contains(Integer.toString(t.count))) {
+					if(recipients.contains(Integer.toString(t.c))) {
 						try {
 						 t.out.writeObject(data);
 						}
 						catch(Exception e) {}
 					}
-					try {
-						this.out.writeObject(data);
-					}catch(Exception e) {}
 				}
+				try {
+					this.out.writeObject(data);
+				}catch(Exception e) {}
 			}
 			
 			public void updateClientList() {
 				ArrayList<String> clientList = new ArrayList<>();
 				for(int i = 0; i < clients.size(); i++) {
 					ClientThread t = clients.get(i);
-					clientList.add(Integer.toString(t.count));
+					clientList.add(Integer.toString(t.c));
 				}
 				MessageData result = new MessageData(clientList, "");
 				for(int i = 0; i < clients.size(); i++) {
@@ -128,40 +124,37 @@ public class Server{
 					connection.setTcpNoDelay(true);	
 				}
 				catch(Exception e) {
-					System.out.println("Streams not open");
+					System.out.println("Stream is not open");
 				}
-				updateClients("new client on server: client #"+count);
+				try {
+					out.writeObject(c);
+				} catch (IOException e1) {}
+				updateClients("new client on server: client #"+c);
 				updateClientList();
-				
-				MessageData message = null;
 					
 				 while(true) {
 					    try {
-					    	
-					    	message = (MessageData) in.readObject(); // for some reason keeps the list of recipients from previous time, but changes the message
+					    	MessageData message = (MessageData) in.readObject();
 					    	String data = message.text;
 					    	ArrayList<String> recip = message.recipients;
 					    	if(message.recipients.size() == 1) {
-					    		callback.accept("client: " + count + " sent a private message to " + recip.toString() + ": " + data);
-					    		updateClients("client #"+count+" said privately: " + data, recip);
-					    		message = null;
+					    		callback.accept("client: " + c + " sent a private message to " + recip.toString() + ": " + data);
+					    		updateClients("client #"+c+" said privately: " + data, recip);
 					    	}
 					    	else if(message.recipients.size() == 0) {
-					    		callback.accept("client: " + count + " sent a message to everyone: " + data);
-					    		updateClients("client #"+count+" said to everyone: " + data);
-					    		message = null;
+					    		callback.accept("client: " + c + " sent a message to everyone: " + data);
+					    		updateClients("client #"+c+" said to everyone: " + data);
 					    	}
 					    	else {
-					    		callback.accept("client: " + count + " sent a group private message to " + recip.toString() + ": " + data);
-					    		updateClients("client #"+count+" said to a group of people: " + data, recip);
-					    		message = null;
+					    		callback.accept("client: " + c + " sent a group private message to " + recip.toString() + ": " + data);
+					    		updateClients("client #"+c+" said to a group of people: " + data, recip);
 					    	}
 					    	
 					    	}
 					    catch(Exception e) {
-					    	callback.accept("OOOOPPs...Something wrong with the socket from client: " + count + "....closing down!");
+					    	callback.accept("OOOOPPs...Something wrong with the socket from client: " + c + "....closing down!");
 					    	clients.remove(this);
-					    	updateClients("Client #"+count+" has left the server!");
+					    	updateClients("Client #"+c+" has left the server!");
 					    	updateClientList();
 					    	break;
 					    }

@@ -17,6 +17,8 @@ public class Client extends Thread{
 	ObjectOutputStream out;
 	ObjectInputStream in;
 	
+	String name;
+	
 	private Consumer<Serializable> callback;
 	private Consumer<Serializable> clientList;
 	
@@ -37,23 +39,33 @@ public class Client extends Thread{
 			System.out.println("Could not connect to the server. Make sure it is running.");
 			System.exit(1);
 			return;
-			}
+		}
+		
+		try {
+			name = in.readObject().toString();
+		}catch(Exception e) {}
 		
 		
 		while(true) {
 			try {
-			MessageData data = (MessageData) in.readObject();
-			String message = data.text;
-			if(message.length() == 0) {
-				synchronized(clientList) {
-					clientList.accept(data.recipients);
+				MessageData data = (MessageData) in.readObject();
+				String message = data.text;
+				if(message.length() == 0) {
+					for(int i = 0; i < data.recipients.size(); i++) {
+						if(data.recipients.get(i).equals(name)) {
+							data.recipients.set(i, name + " (You)");
+							break;
+						}
+					}
+					synchronized(clientList) {
+						clientList.accept(data.recipients);
+					}
 				}
-			}
-			else {
-				synchronized(callback) {
-					callback.accept(message);
+				else {
+					synchronized(callback) {
+						callback.accept(message);
+					}
 				}
-			}
 			}
 			catch(Exception e) {System.out.println("Connection to the server lost"); System.exit(0);}
 		}
@@ -64,7 +76,6 @@ public class Client extends Thread{
 	public synchronized void send(String data, ArrayList<String> recipients) {
 		MessageData message = new MessageData(recipients, data);
 		try {
-			//sending one list of recipients here.
 			out.writeObject(message);
 			out.reset();
 		} catch (IOException e) {
