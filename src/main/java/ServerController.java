@@ -9,8 +9,7 @@ import javafx.scene.control.ListView;
 public class ServerController implements Initializable{
 	@FXML
 	ListView<String> log;
-	Server serverConnection;
-
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		

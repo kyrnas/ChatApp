@@ -1,5 +1,4 @@
 
-import java.util.HashMap;
 import java.util.List;
 
 import javafx.application.Application;
@@ -11,16 +10,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 public class GuiServer extends Application{
-
-	
-	public HashMap<String, Scene> sceneMap;
 	Scene startScene;
-	BorderPane startPane;
 	static Server serverConnection;
 	static Client clientConnection;
 	static Selector select;
@@ -73,26 +67,27 @@ public class GuiServer extends Application{
 		System.exit(0);
 	}
 	
-	
+	// this method is called from selector controller to create client connection thread
 	@SuppressWarnings("unchecked")
 	public static void createClientConnection() {
 		clientConnection = new Client(data->{
 				Platform.runLater(()->{
-					select.chat.chatList.getItems().add(data.toString());
+					select.chat.chatList.getItems().add(data.toString()); // to add messages
 				});
 			}, data->{
 				Platform.runLater(()->{
-					ObservableList<String> obs = FXCollections.observableList((List<String>) data);
-					select.chat.userList.setItems(obs);
+					ObservableList<String> obs = FXCollections.observableList((List<String>) data); // create a new observable list
+					select.chat.userList.setItems(obs); // set the client list to list returned by the server
 				});
 			});
 		clientConnection.start();
 	}
 	
-	public static void createServerConnection() {
+	// this method is called form the selector to create a server
+	public static void createServerConnection() { 
 		serverConnection = new Server(data -> {
 			Platform.runLater(()->{
-				select.serv.log.getItems().add(data.toString());
+				select.serv.log.getItems().add(data.toString()); // add logs to the server window
 			});
 		});
 	}

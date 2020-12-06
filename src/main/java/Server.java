@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 
 public class Server{
 
-	int count = 1;	
+	int count = 1;
 	ArrayList<ClientThread> clients = new ArrayList<ClientThread>();
 	TheServer server;
 	private Consumer<Serializable> callback;
@@ -33,33 +33,33 @@ public class Server{
 	public class TheServer extends Thread{
 		
 		public void run() {
-		
+			// create the connection socket
 			try(ServerSocket mysocket = new ServerSocket(5555);){
 		    System.out.println("Server is waiting for a client!");
 		    callback.accept("Server started");
 		  
-			
+			// accept new clients
 		    while(true) {
+		    	// start a new thread
 				ClientThread c = new ClientThread(mysocket.accept(), count);
 				callback.accept("client has connected to server: " + "client #" + count);
 				clients.add(c);
 				c.start();
 				
 				count++;
+				// update the client list for this new client
 				c.updateClientList();
-			    }
+			}
 			}//end of try
 				catch(Exception e) {
 					e.printStackTrace();
 					callback.accept("Server socket did not launch");
-				}
+			}
 			}//end of while
 		}
 	
 
 		class ClientThread extends Thread{
-			
-		
 			Socket connection;
 			int c;
 			ObjectInputStream in;
@@ -70,6 +70,7 @@ public class Server{
 				this.c = count;	
 			}
 			
+			// for sending messages to all clients
 			public void updateClients(String message) {
 				for(int i = 0; i < clients.size(); i++) {
 					MessageData data = new MessageData(null, message);
@@ -81,10 +82,12 @@ public class Server{
 				}
 			}
 			
+			// for updating specific clients from arraylist recipients
 			public void updateClients(String message, ArrayList<String> recipients) {
 				MessageData data = new MessageData(null, message);
 				for(int i = 0; i < clients.size(); i++) {
 					ClientThread t = clients.get(i);
+					// we will update the client that send this message separately
 					if(t.c == this.c) {
 						continue;
 					}
@@ -100,12 +103,15 @@ public class Server{
 				}catch(Exception e) {}
 			}
 			
+			// for updating the client list's
 			public void updateClientList() {
+				// get the list of all clients names into an arraylist
 				ArrayList<String> clientList = new ArrayList<>();
 				for(int i = 0; i < clients.size(); i++) {
 					ClientThread t = clients.get(i);
 					clientList.add(Integer.toString(t.c));
 				}
+				// create the messagedata with empty message (this will be a flag for the client that we're updating the cleint list)
 				MessageData result = new MessageData(clientList, "");
 				for(int i = 0; i < clients.size(); i++) {
 					ClientThread t = clients.get(i);
@@ -134,18 +140,18 @@ public class Server{
 					
 				 while(true) {
 					    try {
-					    	MessageData message = (MessageData) in.readObject();
+					    	MessageData message = (MessageData) in.readObject(); // 
 					    	String data = message.text;
 					    	ArrayList<String> recip = message.recipients;
-					    	if(message.recipients.size() == 1) {
+					    	if(message.recipients.size() == 1) { // messaged 1 person case
 					    		callback.accept("client: " + c + " sent a private message to " + recip.toString() + ": " + data);
 					    		updateClients("client #"+c+" said privately: " + data, recip);
 					    	}
-					    	else if(message.recipients.size() == 0) {
+					    	else if(message.recipients.size() == 0) { // message for everyone case
 					    		callback.accept("client: " + c + " sent a message to everyone: " + data);
 					    		updateClients("client #"+c+" said to everyone: " + data);
 					    	}
-					    	else {
+					    	else { // message for a group case
 					    		callback.accept("client: " + c + " sent a group private message to " + recip.toString() + ": " + data);
 					    		updateClients("client #"+c+" said to a group of people: " + data, recip);
 					    	}

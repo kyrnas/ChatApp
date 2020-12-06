@@ -13,14 +13,13 @@ public class Client extends Thread{
 
 	
 	Socket socketClient;
-	
 	ObjectOutputStream out;
 	ObjectInputStream in;
 	
-	String name;
+	String name; // client name
 	
-	private Consumer<Serializable> callback;
-	private Consumer<Serializable> clientList;
+	private Consumer<Serializable> callback; // used add the messages to the chat list
+	private Consumer<Serializable> clientList; // used to set the client list to this array list
 	
 	Client(Consumer<Serializable> call, Consumer<Serializable> clie){
 		callback = call;
@@ -30,6 +29,7 @@ public class Client extends Thread{
 	public void run() {
 		
 		try {
+			// create the socket and connection
 			socketClient = new Socket("127.0.0.1",5555);
 		    out = new ObjectOutputStream(socketClient.getOutputStream());
 		    in = new ObjectInputStream(socketClient.getInputStream());
@@ -42,7 +42,7 @@ public class Client extends Thread{
 		}
 		
 		try {
-			name = in.readObject().toString();
+			name = in.readObject().toString(); // initialize clients name
 		}catch(Exception e) {}
 		
 		
@@ -50,7 +50,9 @@ public class Client extends Thread{
 			try {
 				MessageData data = (MessageData) in.readObject();
 				String message = data.text;
-				if(message.length() == 0) {
+				if(message.length() == 0) { // if there was no message that means the server is sending the updated client list
+					// this will find the current user in the list and add a "(You)" to it's representation
+					// it is used for showing the user what user they are
 					for(int i = 0; i < data.recipients.size(); i++) {
 						if(data.recipients.get(i).equals(name)) {
 							data.recipients.set(i, name + " (You)");
@@ -58,12 +60,12 @@ public class Client extends Thread{
 						}
 					}
 					synchronized(clientList) {
-						clientList.accept(data.recipients);
+						clientList.accept(data.recipients); // set the client list
 					}
 				}
-				else {
+				else { // otherwise a message was recieved
 					synchronized(callback) {
-						callback.accept(message);
+						callback.accept(message); // add the message to the list
 					}
 				}
 			}
@@ -74,10 +76,10 @@ public class Client extends Thread{
 	
 	
 	public synchronized void send(String data, ArrayList<String> recipients) {
-		MessageData message = new MessageData(recipients, data);
+		MessageData message = new MessageData(recipients, data); // create a new message
 		try {
-			out.writeObject(message);
-			out.reset();
+			out.writeObject(message); // send the message
+			out.reset(); // make sure to reset for proper work
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

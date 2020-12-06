@@ -8,19 +8,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
 public class Selector implements Initializable{
 
 	Scene clientGui;
 	Scene serverGui;
-	Client clientConnection;
-	Server serverConnection;
 	ServerController serv;
 	Chat chat;
-	ListView<String> listItems, listItems2;
 	
+	// if selected client
 	@FXML
 	public void clientAction(ActionEvent e) throws IOException {
 		clientGui = createClientGui();
@@ -29,9 +26,9 @@ public class Selector implements Initializable{
 		primaryStage.setTitle("Chat");
 		
 		GuiServer.createClientConnection();
-
 	}
 	
+	// if selected server
 	@FXML
 	public void serverAction(ActionEvent e) throws IOException {
 		serverGui = createServerGui();
@@ -42,6 +39,7 @@ public class Selector implements Initializable{
 		GuiServer.createServerConnection();
 	}
 	
+	// create the client scene
 	public Scene createClientGui() {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/chat.fxml"));
@@ -54,6 +52,7 @@ public class Selector implements Initializable{
 		return null;
 	}
 	
+	// crate the server scene
 	public Scene createServerGui() {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/server.fxml"));
@@ -70,7 +69,6 @@ public class Selector implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
-		
 	}
 	
 }
